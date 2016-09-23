@@ -1,0 +1,60 @@
+<form method="post" enctype="multipart/form-data">
+    <table>
+        <?foreach($this->fields as $name => $field){
+            if($field['PRIMARY'] || $name == 'Date') continue;
+            $value = $this->item->$name;
+            ?>
+            <tr>
+                <td><label for="<?=$name?>"><?=$name?>: </label></td>
+                <td>
+                    <?switch($field['DATA_TYPE']){
+                        case 'text':
+                            print "<textarea required id='$name' name='$name'>$value</textarea>";
+                            break;
+                        case 'tinyint':
+                            if($name == 'Type'){
+                                print "<select required id='$name' name='$name'>";
+                                print "<option value='1' ".($value == 1?'selected':'').">Аниме</option>";
+                                print "<option value='2' ".($value == 2?'selected':'').">Манга</option>";
+                                print "<option value='3' ".($value == 3?'selected':'').">Новость</option>";
+                                print "</select>";
+                            }else{
+                                "<input type='checkbox' id='$name' name='$name' ".$value == 1?'checked':''."/>";
+                            }
+                            break;
+                        default:
+                            if($name == 'Image'){
+                                print "<img width='100' src='/img/anime/$value'/><input type='file' id='$name' name='$name'/>";
+                            }else{
+                                print "<input required type='text' id='$name' name='$name' value='$value'/>";
+                            }
+                            break;
+                    }?>
+                </td>
+            </tr>
+        <?}?>
+        <tr>
+            <td>Жанры: </td>
+            <td>
+                <?foreach($this->genres as $genre){?>
+                    <input <?=(in_array($genre->Id, $this->itemGenres))?'checked':''?> id="genre_<?=$genre->Id?>" type="checkbox" name="Genres[<?=$genre->Id?>]" value="<?=$genre->Id?>"/>
+                    <label for="genre_<?=$genre->Id?>"><?=$genre->Name?></label>
+                    <br/>
+                <?}?>
+            </td>
+        </tr>
+    </table>
+    <input type="submit" value="Сохранить"/>
+</form>
+<span class="relative"><span>Добавить серию</span><a href="/admin/add-item-part/id/<?=$this->item->Id?>" title="Добавить серию" class="add"></a></span>
+<?if(count($this->parts)){?>
+    <ul>
+        <?foreach($this->parts as $part){?>
+            <li class="relative">
+                <span><?=$part->Name?> (<?=$part->Part?> серия)</span>
+                <a href="/admin/edit-item-part/id/<?=$this->item->Id?>/part/<?=$part->Part?>" title="Редактировать" class="edit"></a>
+                <a href="/admin/delete-item-part/id/<?=$this->item->Id?>/part/<?=$part->Part?>" title="Удалить" class="delete"></a>
+            </li>
+        <?}?>
+    </ul>
+<?}?>

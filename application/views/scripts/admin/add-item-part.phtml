@@ -1,0 +1,41 @@
+<h3><?=$this->item->Name?> (<?=(isset($this->partCount))?$this->partCount:0?> из <?=$this->item->TotalParts?:'. . .'?>)</h3>
+<?if(isset($this->error)){?>
+    <div class="error"><?=$this->error?></div>
+<?}?>
+<form method="post" enctype="multipart/form-data">
+    <table>
+    <?foreach($this->fields as $name => $field){
+        if($name == 'ItemId') continue;
+        ?>
+        <tr>
+            <td><label for="<?=$name?>"><?=$name?>: </label></td>
+            <td>
+                <?switch($field['DATA_TYPE']){
+                    case 'text':
+                        print "<textarea required id='$name' name='$name'></textarea>";
+                        break;
+                    case 'tinyint':
+                        if($name == 'Type'){
+                            print "<select required id='$name' name='$name'>";
+                            print "<option value='1'>Аниме</option>";
+                            print "<option value='2'>Манга</option>";
+                            print "<option value='3'>Новость</option>";
+                            print "</select>";
+                        }else{
+                            "<input type='checkbox' id='$name' name='$name'/>";
+                        }
+                        break;
+                    default:
+                        if($name == 'Image'){
+                            print "<input required type='file' id='$name' name='$name'/>";
+                        }else{
+                            print "<input required type='text' id='$name' name='$name' value='$field[DEFAULT]'/>";
+                        }
+                        break;
+                }?>
+            </td>
+        </tr>
+    <?}?>
+    </table>
+    <input type="submit" value="Сохранить"/>
+</form>

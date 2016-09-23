@@ -1,0 +1,50 @@
+<?
+$item = $this->item;
+$this->headTitle($item->Name.' '.$this->part.' серия')->headTitle(' Мир аниме Смотреть Аниме Онлайн Anime online бесплатно');
+$count = 0;
+foreach($this->parts as $p){
+    if($p->Part > $count){
+        $count = $p->Part;
+    }
+}
+?>
+<div class="item single">
+    <h2 itemprop="name"><?=$item->Name?> (<?=$count?> из <?=$item->TotalParts?:'. . .'?>)</h2>
+    <?if($this->isAdmin){?>
+        <a href="/admin/edit-item/id/<?=$item->Id?>" title="Редактировать" class="edit"></a>
+        <a href="/admin/delete-item/id/<?=$item->Id?>" title="Удалить" class="delete"></a>
+    <?}?>
+    <div id="rate" class="rating" data-rate="r<?=$this->rate?round($this->rate->Rate):0?>">
+        <span class="rate_value"><?=$this->rate?$this->rate->Rate:'0.00'?><br/><span>Голоса: <?=$this->rate?$this->rate->Total:'0'?></span></span>
+        <?if($this->canVote)for($i = 1; $i <= 12; $i++){?>
+            <a id="r<?=$i?>" class="rate_item r<?=$i?>" href="/anime/vote/id/<?=$item->Id?>/mark/<?=$i?>" title="<?=$i?>"></a>
+        <?}?>
+    </div>
+    <a title="<?=$item->Name?>" class="item_pic" href="#"><img itemprop="image" title="<?=$item->Name?>" alt="<?=$item->Name?>" src="/img/anime/<?=$item->Image?>"/></a>
+    <article itemprop="description">
+        <strong>Жанр: </strong>
+        <span itemprop="genre"><?foreach($this->itemGenres as $igenre){?>
+            <a title="<?=$this->genres[$igenre->GenreId]->Name?>" class="darkred" href="<?=$this->url(array('module' => Zend_Controller_Front::getInstance()->getRequest()->getModuleName(), 'controller' =>Zend_Controller_Front::getInstance()->getRequest()->getControllerName(), 'action' => 'index','genre' => $igenre->GenreId),null,true)?>"><?=$this->genres[$igenre->GenreId]->Name?></a> |
+        <?}?></span>
+        <br/>
+        <strong>Описание: </strong>
+        <?=$item->Description?>
+    </article>
+    <?=$this->object?>
+    <div class="part_nav">
+        <a title="<?=$item->Name?> (<?=$this->part == 1?$this->part:$this->part-1?> серия)" href="/anime/movie/id/<?=$item->Id?>/part/<?=$this->part == 1?$this->part:$this->part-1?>" ><<</a>
+        <span>Серия: </span>
+        <select id="part">
+            <?foreach($this->parts as $part){?>
+                <option <?=$this->part == $part->Part?'selected':''?> value="<?=$part->Part?>"><a title="<?=$part->Name?> (<?=$part->Part?> серия)" href="/anime/movie/id/<?=$item->Id?>/part/<?=$part->Part?>" ><?=$part->Name?> (<?=$part->Part?> серия)</a></option>
+            <?}?>
+        </select>
+        <a title="<?=$item->Name?> (<?=$this->part == count($this->parts)?$this->part:$this->part+1?> серия)" href="/anime/movie/id/<?=$item->Id?>/part/<?=$this->part == count($this->parts)?$this->part:$this->part+1?>" >>></a>
+    </div>
+
+    <!-- Put this div tag to the place, where the Comments block will be -->
+    <div id="vk_comments"></div>
+    <script type="text/javascript">
+        VK.Widgets.Comments("vk_comments", {limit: 5, width: "520", attach: "*"});
+    </script>
+</div>

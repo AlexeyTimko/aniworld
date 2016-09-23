@@ -1,0 +1,29 @@
+<?
+$this->headTitle('Мир аниме Смотреть Аниме Онлайн Anime online бесплатно');
+foreach($this->paginator as $item){?>
+    <div class="item">
+        <a title="<?=$item->Name?>" href="/anime/movie/id/<?=$item->Id?>" itemprop="name">
+            <h2><?=$item->Name?> (<?=(isset($this->partCount[$item->Id]))?$this->partCount[$item->Id]:0?> из <?=$item->TotalParts?:'. . .'?>)</h2>
+        </a>
+        <?if($this->isAdmin){?>
+            <a href="/admin/edit-item/id/<?=$item->Id?>" title="Редактировать" class="edit"></a>
+            <a href="/admin/delete-item/id/<?=$item->Id?>" title="Удалить" class="delete"></a>
+        <?}?>
+        <div class="item_info">
+            Добавлено: <span class="date"><?=date("d.m.Y", strtotime($item->Date))?></span>
+            Жанр: <span class="date" itemprop="genre">
+                <?foreach($this->itemGenres[$item->Id] as $genreId){?>
+                    <a title="<?=$this->genres[$genreId]->Name?>" href="<?=$this->url(array('module' => Zend_Controller_Front::getInstance()->getRequest()->getModuleName(), 'controller' =>Zend_Controller_Front::getInstance()->getRequest()->getControllerName(), 'action' => 'index','genre' => $genreId),null,true)?>"><?=$this->genres[$genreId]->Name?> </a>
+                <?}?>
+            </span>
+        </div>
+        <div class="rating" data-rate="r<?=isset($this->rate[$item->Id])?round($this->rate[$item->Id]->Rate):0?>">
+            <span class="rate_value"><?=isset($this->rate[$item->Id])?$this->rate[$item->Id]->Rate:'0.00'?><br/><span>Голоса: <?=isset($this->rate[$item->Id])?$this->rate[$item->Id]->Total:'0'?></span></span>
+        </div>
+        <a title="<?=$item->Name?>" class="item_pic" href="/anime/movie/id/<?=$item->Id?>">
+            <img itemprop="image" title="<?=$item->Name?>" alt="<?=$item->Name?>" src="/img/anime/<?=$item->Image?>"/>
+        </a>
+        <article itemprop="description"><?=mb_strlen($item->Description,  'UTF-8')>700?mb_substr($item->Description, 0, 700, 'UTF-8').'...':$item->Description?></article>
+    </div>
+<?}?>
+<?=$this->paginator?>

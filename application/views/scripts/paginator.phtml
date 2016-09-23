@@ -1,0 +1,76 @@
+<ul class="paginator">
+    <?php
+    if ($this->pageCount) {
+        $params = Zend_Controller_Front::getInstance()->getRequest()->getParams();
+        $params = array_diff_key($params, array('action' => 1,'module' => 1,'controller' => 1,'page' => 1,));
+        /**
+         * First
+         */
+        $first = '<<';//'<img src="/img/ico/resultset_first.png" title="Начало" alt="Начало">';
+        if ($this->first != $this->current) {
+            $first = '<a title="Начало" href="' . $this->url(array('module' => Zend_Controller_Front::getInstance()->getRequest()->getModuleName(), 'controller' =>Zend_Controller_Front::getInstance()->getRequest()->getControllerName(), 'action' =>Zend_Controller_Front::getInstance()->getRequest()->getActionName(),'page' => $this->first) + $params,null,true). '">'
+                . $first
+                . '</a>';
+        }
+        $first = '<li>' . $first . '</li>' . PHP_EOL;
+
+        /**
+         * Previous
+         */
+        $previous = '<';//'<img src="/img/ico/resultset_previous.png" title="Предыдущая" alt="Предыдущая">';
+        if (isset($this->previous)) {
+            $previous = '<a title="Предыдущая" href="' . $this->url(array('module' => Zend_Controller_Front::getInstance()->getRequest()->getModuleName(), 'controller' =>Zend_Controller_Front::getInstance()->getRequest()->getControllerName(), 'action' =>Zend_Controller_Front::getInstance()->getRequest()->getActionName(),'page' => $this->previous) + $params,null,true). '">'
+                . $previous
+                . '</a>';
+        }
+        $previous = '<li>' . $previous . '</li>' . PHP_EOL;
+
+        /**
+         * Pages
+         */
+        $pages = '';
+        foreach ($this->pagesInRange as $page) {
+            if ($page != $this->current) {
+                $page = '<a href="' . $this->url(array('module' => Zend_Controller_Front::getInstance()->getRequest()->getModuleName(), 'controller' =>Zend_Controller_Front::getInstance()->getRequest()->getControllerName(), 'action' =>Zend_Controller_Front::getInstance()->getRequest()->getActionName(),'page' => $page) + $params,null,true). '">'
+                    . $page
+                    .'</a>';
+            } else {
+                $page = '<strong>' . $page . '</strong>';
+            }
+            $pages .= '<li>' . $page . '</li>' . PHP_EOL;
+        }
+
+        /**
+         * Next
+         */
+        $next = '>';//'<img src="/img/ico/resultset_next.png" title="Следующая" alt="Следующая">';
+        if (isset($this->next)) {
+            $next = '<a title="Следующая" href="' . $this->url(array('module' => Zend_Controller_Front::getInstance()->getRequest()->getModuleName(), 'controller' =>Zend_Controller_Front::getInstance()->getRequest()->getControllerName(), 'action' =>Zend_Controller_Front::getInstance()->getRequest()->getActionName(),'page' => $this->next) + $params,null,true). '">'
+                . $next
+                . '</a>';
+        }
+        $next = '<li>' . $next . '</li>' . PHP_EOL;
+
+        /**
+         * Last
+         */
+        $last = '>>';//'<img src="/img/ico/resultset_last.png" title="Конец" alt="Конец">';
+        if ($this->last != $this->current) {
+            $last = '<a title="Конец" href="' . $this->url(array('module' => Zend_Controller_Front::getInstance()->getRequest()->getModuleName(), 'controller' =>Zend_Controller_Front::getInstance()->getRequest()->getControllerName(), 'action' =>Zend_Controller_Front::getInstance()->getRequest()->getActionName(),'page' => $this->last) + $params,null,true). '">'
+                . $last
+                . '</a>';
+        }
+        $last = '<li>' . $last . '</li>' . PHP_EOL;
+
+        /**
+         * Compile paginator html
+         */
+        $paginatorHtml = $first . PHP_EOL
+            . $previous . PHP_EOL
+            . $pages . PHP_EOL
+            . $next . PHP_EOL
+            . $last . PHP_EOL;
+        echo $paginatorHtml;
+    }
+    ?>
+</ul>
